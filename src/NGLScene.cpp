@@ -64,10 +64,6 @@ struct vertData
 {
   ngl::Vec3 p1;
   ngl::Vec3 n1;
-  ngl::Vec3 p2;
-  ngl::Vec3 n2;
-  ngl::Vec3 p3;
-  ngl::Vec3 n3;
 };
 void NGLScene::createMorphMesh()
 {
@@ -131,7 +127,6 @@ void NGLScene::createMorphMesh()
   // generate and bind our matrix buffer this is going to be fed to the feedback shader to
   // generate our model position data for later, if we update how many instances we use
   // this will need to be re-generated (done in the draw routine)
-
 
   GLuint morphTarget;
   glGenBuffers(1,&morphTarget);
