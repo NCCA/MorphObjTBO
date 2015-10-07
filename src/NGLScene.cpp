@@ -20,7 +20,7 @@ const static float INCREMENT=0.01;
 //----------------------------------------------------------------------------------------------------------------------
 const static float ZOOM=0.1;
 
-NGLScene::NGLScene(QWindow *_parent) : OpenGLWindow(_parent)
+NGLScene::NGLScene()
 {
   // re-size the widget to that of the parent (in this case the GLFrame passed in on construction)
   m_rotate=false;
@@ -44,7 +44,7 @@ void NGLScene::punchLeft()
   if(m_punchLeft !=true)
   {
     m_weight1=0.0;
-    m_timerLeft->start(1);
+    m_timerLeft->start(4);
     m_punchLeft=true;
   }
 }
@@ -54,7 +54,7 @@ void NGLScene::punchRight()
   if(m_punchRight !=true)
   {
     m_weight2=0.0;
-    m_timerRight->start(1);
+    m_timerRight->start(4);
     m_punchRight=true;
   }
 }
@@ -120,9 +120,6 @@ void NGLScene::createMorphMesh()
     vboMesh.push_back(d);
     }
   }
-
-
-
 
   // generate and bind our matrix buffer this is going to be fed to the feedback shader to
   // generate our model position data for later, if we update how many instances we use
@@ -193,32 +190,24 @@ void NGLScene::changeWeight(Weights _w,Direction _d )
 
 NGLScene::~NGLScene()
 {
-  ngl::NGLInit *Init = ngl::NGLInit::instance();
   std::cout<<"Shutting down NGL, removing VAO's and Shaders\n";
-  Init->NGLQuit();
   for(unsigned int i=0; i<m_meshes.size(); ++i)
   {
     delete m_meshes[i];
   }
-
 }
 
-void NGLScene::resizeEvent(QResizeEvent *_event )
+void NGLScene::resizeGL(int w, int h)
 {
-  if(isExposed())
-  {
-  int w=_event->size().width();
-  int h=_event->size().height();
   // set the viewport for openGL
   glViewport(0,0,w,h);
   // now set the camera size values as the screen size has changed
   m_cam->setShape(45,(float)w/h,0.05,350);
-  renderNow();
-  }
+  update();
 }
 
 
-void NGLScene::initialize()
+void NGLScene::initializeGL()
 {
   // we must call this first before any other GL commands to load and link the
   // gl commands from the lib, if this is not done program will crash
@@ -337,7 +326,7 @@ void NGLScene::loadMatricesToShader()
   shader->setUniform("weight2",m_weight2);
 }
 
-void NGLScene::render()
+void NGLScene::paintGL()
 {
   // clear the screen and depth buffer
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -384,7 +373,7 @@ void NGLScene::mouseMoveEvent (QMouseEvent * _event)
     m_spinYFace += (float) 0.5f * diffx;
     m_origX = _event->x();
     m_origY = _event->y();
-    renderNow();
+    update();
 
   }
         // right mouse translate code
@@ -396,7 +385,7 @@ void NGLScene::mouseMoveEvent (QMouseEvent * _event)
     m_origYPos=_event->y();
     m_modelPos.m_x += INCREMENT * diffX;
     m_modelPos.m_y -= INCREMENT * diffY;
-    renderNow();
+    update();
 
    }
 }
@@ -452,7 +441,7 @@ void NGLScene::wheelEvent(QWheelEvent *_event)
 	{
 		m_modelPos.m_z-=ZOOM;
 	}
-	renderNow();
+	update();
 }
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -481,7 +470,7 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
   }
   // finally update the GLWindow and re-draw
   //if (isExposed())
-    renderNow();
+    update();
 }
 
 
@@ -506,7 +495,7 @@ void NGLScene::updateLeft()
      m_punchLeft=false;
    }
   }
-  renderNow();
+  update();
 }
 
 void NGLScene::updateRight()
@@ -529,6 +518,6 @@ void NGLScene::updateRight()
      m_punchRight=false;
    }
   }
-  renderNow();
+  update();
 }
 
