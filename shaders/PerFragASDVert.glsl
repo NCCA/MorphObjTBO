@@ -17,10 +17,10 @@ void main()
 	// so the data is passed in a packed array, we have vec4's with
 	// vert1 vert2 normal1 normal2 so we offset vertex Id by 4 and then index in
 	// to get our correct value
-	vec3 poseVert1=texelFetch(TBO,int(4*gl_VertexID)).xyz;
-	vec3 poseVert2=texelFetch(TBO,int(4*gl_VertexID+1)).xyz;
-	vec3 poseNormal1=texelFetch(TBO,int(4*gl_VertexID+2)).xyz;
-	vec3 poseNormal2=texelFetch(TBO,int(4*gl_VertexID+3)).xyz;
+  vec3 poseVert1=texelFetch(TBO,int(4 *gl_VertexID)).xyz;
+  vec3 poseVert2=texelFetch(TBO,int(4*gl_VertexID+1)).xyz;
+  vec3 poseNormal1=texelFetch(TBO,int(4*gl_VertexID+2)).xyz;
+  vec3 poseNormal2=texelFetch(TBO,int(4*gl_VertexID+3)).xyz;
 
 	vec3  finalN=baseNormal+(weight1*poseNormal1)+(weight2*poseNormal2);
 	// then normalize and mult by normal matrix for shading
