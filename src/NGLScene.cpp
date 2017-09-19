@@ -10,15 +10,11 @@
 #include <ngl/VAOPrimitives.h>
 #include <ngl/ShaderLib.h>
 
-
-
-
 NGLScene::NGLScene()
 {
-
   setTitle("Morph Mesh Demo");
-  m_weight1=0.0;
-  m_weight2=0.0;
+  m_weight1=0.0f;
+  m_weight2=0.0f;
   m_animation=true;
   m_punchLeft=false;
   m_punchRight=false;
@@ -32,7 +28,7 @@ void NGLScene::punchLeft()
 {
   if(m_punchLeft !=true)
   {
-    m_weight1=0.0;
+    m_weight1=0.0f;
     m_timerLeft->start(4);
     m_punchLeft=true;
   }
@@ -42,7 +38,7 @@ void NGLScene::punchRight()
 {
   if(m_punchRight !=true)
   {
-    m_weight2=0.0;
+    m_weight2=0.0f;
     m_timerRight->start(4);
     m_punchRight=true;
   }
@@ -155,16 +151,16 @@ void NGLScene::changeWeight(Weights _w,Direction _d )
    {
     case Weights::POSE1 :
       if(_d == Direction::UP)
-        m_weight1+=0.1;
+        m_weight1+=0.1f;
       else
-        m_weight1-=0.1;
+        m_weight1-=0.1f;
     break;
 
     case Weights::POSE2 :
       if(_d == Direction::UP)
-        m_weight2+=0.1;
+        m_weight2+=0.1f;
       else
-        m_weight2-=0.1;
+        m_weight2-=0.1f;
     break;
    }
   // clamp to 0.0 -> 1.0 range
@@ -254,12 +250,12 @@ void NGLScene::initializeGL()
         // Specular shininess factor
         float shininess;
   };*/
-  shader->setShaderParam3f("material.Ka",0.1,0.1,0.1);
+  shader->setUniform("material.Ka",0.1f,0.1f,0.1f);
   // red diffuse
-  shader->setShaderParam3f("material.Kd",0.8,0.8,0.8);
+  shader->setUniform("material.Kd",0.8f,0.8f,0.8f);
   // white spec
-  shader->setShaderParam3f("material.Ks",1.0,1.0,1.0);
-  shader->setShaderParam1f("material.shininess",1000);
+  shader->setUniform("material.Ks",1.0f,1.0f,1.0f);
+  shader->setUniform("material.shininess",1000.0f);
   // now for  the lights values (all set to white)
   /*struct LightInfo
   {
@@ -273,9 +269,9 @@ void NGLScene::initializeGL()
   vec3 Ls;
   };*/
   shader->setUniform("light.position",ngl::Vec3(2,20,2));
-  shader->setShaderParam3f("light.La",0.1,0.1,0.1);
-  shader->setShaderParam3f("light.Ld",1.0,1.0,1.0);
-  shader->setShaderParam3f("light.Ls",0.9,0.9,0.9);
+  shader->setUniform("light.La",0.1f,0.1f,0.1f);
+  shader->setUniform("light.Ld",1.0f,1.0f,1.0f);
+  shader->setUniform("light.Ls",0.9f,0.9f,0.9f);
 
   glEnable(GL_DEPTH_TEST); // for removal of hidden surfaces
 
