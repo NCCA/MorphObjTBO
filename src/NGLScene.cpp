@@ -2,10 +2,7 @@
 #include <QGuiApplication>
 
 #include "NGLScene.h"
-#include <ngl/Camera.h>
-#include <ngl/Light.h>
 #include <ngl/Transformation.h>
-#include <ngl/Material.h>
 #include <ngl/NGLInit.h>
 #include <ngl/VAOPrimitives.h>
 #include <ngl/ShaderLib.h>
@@ -123,7 +120,7 @@ void NGLScene::createMorphMesh()
   glTexBuffer(GL_TEXTURE_BUFFER, GL_RGB32F, morphTarget);
 
   // first we grab an instance of our VOA class as a TRIANGLE_STRIP
-  m_vaoMesh.reset( ngl::VAOFactory::createVAO("simpleVAO",GL_TRIANGLES));
+  m_vaoMesh= ngl::VAOFactory::createVAO("simpleVAO",GL_TRIANGLES);
   // next we bind it so it's active for setting data
   m_vaoMesh->bind();
   auto meshSize=vboMesh.size();
@@ -176,7 +173,7 @@ NGLScene::~NGLScene()
 
 void NGLScene::resizeGL( int _w, int _h )
 {
-  m_cam.setShape( 45.0f, static_cast<float>( _w ) / _h, 0.05f, 350.0f );
+  m_project=ngl::perspective( 45.0f, static_cast<float>( _w ) / _h, 0.05f, 350.0f );
   m_win.width  = static_cast<int>( _w * devicePixelRatio() );
   m_win.height = static_cast<int>( _h * devicePixelRatio() );
 }
@@ -211,10 +208,10 @@ void NGLScene::initializeGL()
   m_meshes.push_back(std::move(mesh3));
   createMorphMesh();
 
-  m_cam.set(from,to,up);
+  m_view=ngl::lookAt(from,to,up);
   // set the shape using FOV 45 Aspect Ratio based on Width and Height
   // The final two are near and far clipping planes of 0.5 and 10
-  m_cam.setShape(45,(float)720.0/576.0,0.05,350);
+  m_project=ngl::perspective(45,(float)720.0/576.0,0.05,350);
   // now to load the shader and set the values
   // grab an instance of shader manager
   ngl::ShaderLib *shader=ngl::ShaderLib::instance();
@@ -289,8 +286,8 @@ void NGLScene::loadMatricesToShader()
   ngl::Mat4 MV;
   ngl::Mat4 MVP;
   ngl::Mat3 normalMatrix;
-  MV= m_cam.getViewMatrix()*m_mouseGlobalTX;
-  MVP=m_cam.getProjectionMatrix()*MV ;
+  MV= m_view*m_mouseGlobalTX;
+  MVP=m_project*MV ;
   normalMatrix=MV;
   normalMatrix.inverse().transpose();
   shader->setUniform("MVP",MVP);
