@@ -10,9 +10,9 @@ if(NOT DEFINED CMAKE_TOOLCHAIN_FILE AND DEFINED ENV{CMAKE_TOOLCHAIN_FILE})
 endif()
 
 # Name of the project
-project(MorphObjBuild)
+project(MorphObjTBOBuild)
 # This is the name of the Exe change this and it will change everywhere
-set(TargetName MorphObj)
+set(TargetName MorphObjTBO)
 # This will include the file NGLConfig.cmake, you need to add the location to this either using
 # -DCMAKE_PREFIX_PATH=~/NGL or as a system environment variable. 
 find_package(NGL CONFIG REQUIRED)
@@ -48,7 +48,7 @@ add_custom_target(${TargetName}CopyShaders ALL
     $<TARGET_FILE_DIR:${TargetName}>/shaders
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_CURRENT_SOURCE_DIR}/models
-		$<TARGET_FILE_DIR:${TargetName}>/models
-		COMMAND ${CMAKE_COMMAND} -E copy_directory
+    $<TARGET_FILE_DIR:${TargetName}>/models
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_CURRENT_SOURCE_DIR}/fonts
     $<TARGET_FILE_DIR:${TargetName}>/fonts) 
